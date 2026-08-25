@@ -151,6 +151,14 @@ export async function queryLeads(
     [leadIds] as RawBinding[]
   );
 
+  // Group the custom field rows by lead ID so we can attach them efficiently
+  const cfvByLeadId = new Map<string, CustomFieldValueRow[]>();
+  for (const row of cfvResult.rows) {
+    const existing = cfvByLeadId.get(row.lead_id) ?? [];
+    existing.push(row);
+    cfvByLeadId.set(row.lead_id, existing);
+  }
+
   // Convert snake_case DB columns to camelCase for the API response
   const data: LeadResponse[] = leads.map((lead) => {
     const customFieldRows = cfvByLeadId.get(lead.id) ?? [];
