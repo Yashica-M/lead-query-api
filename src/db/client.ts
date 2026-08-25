@@ -8,6 +8,12 @@
 
 import knex from 'knex';
 import 'dotenv/config';
+import dns from 'dns';
+
+// Fix Node.js ENOTFOUND for IPv6-only hosts like Supabase db.*.supabase.co in Vercel serverless
+if (dns.setDefaultResultOrder) {
+  dns.setDefaultResultOrder('verbatim');
+}
 
 const db = knex({
   client: 'pg',
