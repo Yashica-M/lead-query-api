@@ -13,7 +13,7 @@ const db = knex({
   client: 'pg',
   connection: {
     connectionString: process.env.DATABASE_URL,
-    ssl: process.env.DATABASE_URL?.includes('supabase')
+    ssl: process.env.DATABASE_URL && !process.env.DATABASE_URL.includes('localhost')
       ? { rejectUnauthorized: false }
       : false,
   },
