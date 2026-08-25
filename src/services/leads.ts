@@ -164,7 +164,7 @@ export async function queryLeads(
       email: lead.email,
       assignedTo: lead.assigned_to,
       followUpDate: lead.follow_up_date
-        ? String(lead.follow_up_date).split('T')[0]
+        ? new Date(lead.follow_up_date).toISOString().split('T')[0]
         : null,
       createdAt: lead.created_at,
       updatedAt: lead.updated_at,
