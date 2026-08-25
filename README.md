@@ -357,7 +357,7 @@ lead-query-api/
 ## What I'd Improve
 
 1. **Full-text search index** — add `pg_trgm` GIN index on name/phone for production-scale search instead of ILIKE
-2. ~~**Unit tests**~~ — done: `tests/filters.test.ts` covers the DSL compiler (10 tests, pure functions, no DB needed)
+2. ✅ **Unit tests** — added `tests/filters.test.ts` covering the filter DSL compiler (10 tests, pure functions, no DB needed)
 3. **OpenAPI spec** — auto-generate from Zod schemas using `zod-to-openapi`
 4. **Request logging** — add `morgan` middleware to log method, path, status, duration
 5. **Cursor-based pagination** — keyset pagination is more stable than OFFSET for large tables (OFFSET gets slower as page number increases)
