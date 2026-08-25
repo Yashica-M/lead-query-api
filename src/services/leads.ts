@@ -27,6 +27,16 @@ const SORT_COLUMN_MAP: Record<string, string> = {
   followUpDate: 'leads.follow_up_date',
 };
 
+function formatDate(val: unknown): string | null {
+  if (!val) return null;
+  const d = new Date(val as string | number | Date);
+  if (isNaN(d.getTime())) return String(val).split('T')[0];
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 /**
  * Runs the lead search and returns a paginated, hydrated response.
  */
@@ -141,14 +151,6 @@ export async function queryLeads(
     [leadIds] as RawBinding[]
   );
 
-  // Group the custom field rows by lead ID so we can attach them efficiently
-  const cfvByLeadId = new Map<string, CustomFieldValueRow[]>();
-  for (const row of cfvResult.rows) {
-    const existing = cfvByLeadId.get(row.lead_id) ?? [];
-    existing.push(row);
-    cfvByLeadId.set(row.lead_id, existing);
-  }
-
   // Convert snake_case DB columns to camelCase for the API response
   const data: LeadResponse[] = leads.map((lead) => {
     const customFieldRows = cfvByLeadId.get(lead.id) ?? [];
@@ -163,9 +165,7 @@ export async function queryLeads(
       e164: lead.e164,
       email: lead.email,
       assignedTo: lead.assigned_to,
-      followUpDate: lead.follow_up_date
-        ? new Date(lead.follow_up_date).toISOString().split('T')[0]
-        : null,
+      followUpDate: formatDate(lead.follow_up_date),
       createdAt: lead.created_at,
       updatedAt: lead.updated_at,
       customFields: customFieldRows.map((cf) => ({
