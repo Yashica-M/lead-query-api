@@ -31,6 +31,7 @@ export function errorHandler(
   res.status(500).json({
     message: 'Internal server error',
     statusCode: 500,
+    error: err.message || String(err),
     requestId: req.headers['x-request-id'],
   });
 }
